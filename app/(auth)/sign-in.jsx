@@ -1,45 +1,55 @@
-import { useState } from "react";
-import { Link } from "expo-router";
+import { useEffect, useState } from "react";
+import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, Dimensions, Image, Alert } from "react-native";
 
 import { images } from "../../constants"; 
 import CustomButton from "../../components/CustomButton";
 import FormField from "../../components/FormField";
-
-import { loginUser } from "../../lib/xano";
+import { getCurrentUser, signIn } from "../../lib/xano";
+ 
 
 const SignIn = () => {
 
-  const [isSubmitting, setSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
  
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+
+  useEffect(()=> {
+    
+  },[])
   
   const submit = async () => {
-    if (form.email === "" || form.password === "") {
+    if (!form.email || !form.password ) {
       Alert.alert("Error", "Please fill in all fields");
+       return;
     }
 
-    setSubmitting(true);
+    setIsSubmitting(true);
 
     try {
-      await loginUser(form.email, form.password);
-      // const result = await getCurrentUser();
-      // setUser(result);
-      // setIsLogged(true);
+      const result = await signIn(form.email, form.password);
 
-      // Alert.alert("Success", "User signed in successfully");
+      if (result && result.error) {
+        Alert.alert("Error", result.message);
+        return;
+      }
+
+      //setUser(result);
+      //setIsLogged(true);
+
       router.replace("/home");
-    } catch (error) {
-      Alert.alert("Error", error.message);
+    } catch (error) { 
+      // console.log("error",JSON.stringify(error));
+      Alert.alert("Error", JSON.stringify(error));
     } finally {
-      setSubmitting(false);
+      setIsSubmitting(false);
     }
-  };
 
+  };
   return (
     <SafeAreaView  className="bg-primary h-full">
       <ScrollView>

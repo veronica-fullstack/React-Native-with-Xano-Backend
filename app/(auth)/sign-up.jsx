@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { Link } from "expo-router";
+import { useEffect, useState } from "react";
+import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, ScrollView, Dimensions, Image } from "react-native";
+import { View, Text, ScrollView, Dimensions, Image, Alert } from "react-native";
 
 import { images } from "../../constants"; 
 import CustomButton from "../../components/CustomButton";
 import FormField from "../../components/FormField";
 import { createUser } from "../../lib/xano";
-import { useAuth,AuthProvider } from "../../lib/AuthContext";
+import axios from "axios";
 
 const SignUp = () => {
  
@@ -19,8 +19,47 @@ const SignUp = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  useEffect(()=> {
+    
+  },[])
+
   const submit = async () => {
-    const result = await onRegister
+    if (!form.username|| !form.email || !form.password ) {
+      Alert.alert("Error", "Please fill in all fields");
+       return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const result = await createUser(form.email, form.password, form.username);
+      
+      if (result && result.error) {
+        Alert.alert("Error", result.message);
+        return;
+      }
+
+      //setUser(result);
+      //setIsLogged(true);
+
+      router.replace("/home");
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+
+    // console.log("form", form);
+
+    // const result = await onRegister(form.email,form.password,form.username);
+    // if (result && result.error) {
+    //   Alert.alert("Error",result);
+    // }
+    // else {
+    //   // login
+    //   console.log("registered:", result);
+    //   Alert.alert("Success","Registered");
+    // }
   };
 
   return (
