@@ -8,8 +8,11 @@ import CustomButton from "../../components/CustomButton";
 import FormField from "../../components/FormField";
 import { createUser } from "../../lib/xano";
 import axios from "axios";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const SignUp = () => {
+
+  const { setUser, setIsLogged } = useGlobalContext();
  
   const [form, setForm] = useState({
     username: "",
@@ -39,8 +42,8 @@ const SignUp = () => {
         return;
       }
 
-      //setUser(result);
-      //setIsLogged(true);
+      setUser(result);
+      setIsLogged(true);
 
       router.replace("/home");
     } catch (error) {

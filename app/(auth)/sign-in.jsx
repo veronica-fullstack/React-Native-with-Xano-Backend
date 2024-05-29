@@ -7,10 +7,10 @@ import { images } from "../../constants";
 import CustomButton from "../../components/CustomButton";
 import FormField from "../../components/FormField";
 import { getCurrentUser, signIn } from "../../lib/xano";
- 
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const SignIn = () => {
-
+  const { setUser, setIsLogged } = useGlobalContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
  
   const [form, setForm] = useState({
@@ -31,15 +31,19 @@ const SignIn = () => {
     setIsSubmitting(true);
 
     try {
-      const result = await signIn(form.email, form.password);
+      await signIn(form.email, form.password);
 
       if (result && result.error) {
         Alert.alert("Error", result.message);
         return;
       }
 
-      //setUser(result);
-      //setIsLogged(true);
+      const result = await getCurrentUser();
+      console.log(result);
+      setUser(result);
+      setIsLogged(true);
+
+      Alert.alert("Success", "User signed in successfully");
 
       router.replace("/home");
     } catch (error) { 

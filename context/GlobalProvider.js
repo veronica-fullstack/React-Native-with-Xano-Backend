@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-import { getCurrentUser } from "../lib/xano";
+import { getCurrentUser, signOut } from "../lib/xano";
 
 const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -20,7 +20,7 @@ const GlobalProvider = ({ children }) => {
           setIsLogged(false);
           setUser(null);
         }
-       //console.log(isLogged, user);
+      //  console.log(isLogged, user);
       })
       .catch((error) => {
         console.log(error);
